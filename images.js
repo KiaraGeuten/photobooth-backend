@@ -4,6 +4,13 @@ import express from "express";
 
 const router = express.Router();
 
+import multer from "multer";
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+});
+
 router.get("/", async (req, res) => {
   console.log("GET /images was called");
 
@@ -25,6 +32,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// no multer
 router.post("/", async (req, res) => {
   try {
     const { image, code } = req.body;
@@ -53,6 +61,39 @@ router.post("/", async (req, res) => {
 
     res.status(500).json({
       message: "Error saving image",
+      error: error.message,
+    });
+  }
+});
+
+router.post("/upload", upload.single("image"), async (req, res) => {
+  try {
+    const { code } = req.body;
+
+    if (!req.file || !code) {
+      return res.status(400).json({
+        message: "Image and code are required",
+      });
+    }
+
+    const db = getDB();
+
+    const result = await db.collection("img").insertOne({
+      code,
+      image: req.file.buffer,
+      contentType: req.file.mimetype,
+      createdAt: new Date(),
+    });
+
+    res.status(201).json({
+      message: "Photo uploaded successfully!",
+      id: result.insertedId,
+      code,
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({
+      message: "Error uploading photo",
       error: error.message,
     });
   }
