@@ -27,10 +27,10 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { imageUrl, code } = req.body;
+    const { image, code } = req.body;
 
     // Check if the required data exists
-    if (!imageUrl || !code) {
+    if (!image || !code) {
       return res.status(400).json({
         message: "Image URL and code are required",
       });
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
 
     // Save image in MongoDB
     const result = await db.collection("img").insertOne({
-      imageUrl,
+      image,
       code,
     });
 
