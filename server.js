@@ -1,31 +1,26 @@
 import express from "express";
-import { connectDB } from "./database.js";
 import cors from "cors";
-const app = express();
 
-// Middleware
-app.use(express.json());
-app.use(cors());
+//db conncect
+import { connectDB } from "./database.js";
+
+await connectDB();
+
+//server app setup
+const app = express();
+const port = 3000;
 
 // Home route
 app.get("/", (req, res) => {
   res.send("Helllooo");
 });
 
-// Start server after database connection
-const PORT = process.env.PORT || 3000;
+import imagesRoutes from "./images.js";
 
-async function startServer() {
-  try {
-    await connectDB();
+app.use(express.json());
+app.use(cors());
+app.use("/images", imagesRoutes);
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-}
-
-startServer();
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
