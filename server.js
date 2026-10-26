@@ -1,20 +1,30 @@
-//server app setup
 import express from "express";
-const app = express();
-const port = 3000;
-
-//db conncect
 import { connectDB } from "./database.js";
 
-await connectDB();
+const app = express();
 
-//handled as json
+// Middleware
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-app.get("/", async (req, res) => {
+// Home route
+app.get("/", (req, res) => {
   res.send("Helllooo");
 });
+
+// Start server after database connection
+const PORT = process.env.PORT || 3000;
+
+async function startServer() {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+}
+
+startServer();
