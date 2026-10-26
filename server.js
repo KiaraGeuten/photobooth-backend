@@ -1,6 +1,6 @@
 import express from "express";
 import { connectDB } from "./database.js";
-const cors = require("cors");
+import cors from "cors";
 const app = express();
 
 // Middleware
