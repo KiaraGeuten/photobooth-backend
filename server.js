@@ -1,10 +1,11 @@
 import express from "express";
 import { connectDB } from "./database.js";
-
+const cors = require("cors");
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Home route
 app.get("/", (req, res) => {
