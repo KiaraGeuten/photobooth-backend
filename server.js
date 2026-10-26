@@ -1,26 +1,28 @@
 import express from "express";
 import cors from "cors";
 
-//db conncect
 import { connectDB } from "./database.js";
+import imagesRoutes from "./images.js";
 
-await connectDB();
-
-//server app setup
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Connect to MongoDB
+await connectDB();
 
 // Home route
 app.get("/", (req, res) => {
   res.send("Helllooo");
 });
 
-import imagesRoutes from "./images.js";
-
-app.use(express.json());
-app.use(cors());
+// Images routes
 app.use("/images", imagesRoutes);
 
+// Start server
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

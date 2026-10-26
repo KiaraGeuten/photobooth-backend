@@ -11,7 +11,7 @@ export async function connectDB() {
   try {
     await client.connect();
 
-    db = client.db("riftboundApiDB");
+    db = client.db("experienceDesign3");
 
     await db.command({ ping: 1 });
 
